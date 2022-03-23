@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Header, Home } from "./components";
+import { Header, Home, Footer} from "./components";
 import { Login, Payment, Checkout, Orders } from "./pages/";
-import { auth, app } from "./firebase";
+import { auth } from "./firebase";
 import { useStateValue } from "./context/StateProvider";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { ProtectedRoute } from "./helpers/routes";
+
 
 const promise = loadStripe(
   "pk_test_51KehgHDExzWGiqB97A45PiK1ipHB4ua4oztxzW3pjqZ7hMx6VWsoPyt7iKhnaW8qWfExCm5oiP8waxvutgfGKKXG00f7wUaQPB"
@@ -16,14 +17,15 @@ function App() {
   const [{ user }, dispatch] = useStateValue();
 
   useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
+    const listener = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
+        localStorage.setItem('authUser', JSON.stringify(authUser))
         dispatch({
           type: "SET_USER",
           user: authUser,
         });
-
       } else {
+        localStorage.removeItem('authUser');
         dispatch({
           type: "SET_USER",
           user: null,
@@ -31,7 +33,7 @@ function App() {
       }
     });
 
-    return () => {};
+    return () => listener();
   }, []);
 
   return (
@@ -44,6 +46,8 @@ function App() {
             <>
               <Header />
               <Home />
+              <Footer />
+              
             </>
           }
         />
@@ -54,6 +58,7 @@ function App() {
               <>
                 <Header />
                 <Checkout />
+                <Footer />
               </>
             }
           />
@@ -67,6 +72,7 @@ function App() {
                 <Elements stripe={promise}>
                   <Payment />
                 </Elements>
+                <Footer />
               </>
             }
           />
@@ -79,6 +85,7 @@ function App() {
               <>
                 <Header />
                 <Orders />
+                <Footer />
               </>
             }
           />

@@ -12,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const isEmpty = email ==="" && password === "" ? true : false;
+  const isEmpty = email === "" && password === "" ? true : false;
 
   const signIn = async (e) => {
     e.preventDefault();
@@ -24,23 +24,19 @@ const Login = () => {
       navigate("/");
     } catch (e) {
       alert(e.message);
-      setLoading(false);
-      setEmail("");
-      setPassword("");
     }
   };
 
   const register = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (e) {
       alert(e.message);
-      setEmail("");
-      setPassword("");
+     
     }
   };
   return (
@@ -88,7 +84,7 @@ const Login = () => {
         <button
           onClick={register}
           className="login__registerButton"
-          disabled={loading && isEmpty}
+          disabled={loading || isEmpty}
         >
           Create your Amazon Account
         </button>

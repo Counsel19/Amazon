@@ -1,6 +1,7 @@
+
 export const initialState = {
   basket: [],
-  user: null,
+  user:  JSON.parse(localStorage.getItem('authUser')),
 };
 
 
